@@ -72,7 +72,7 @@ public class DbHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public boolean insertAccount(Account account){
+    public boolean addAccount(Account account){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(ACCOUNT_NO,account.getAccountNo());
