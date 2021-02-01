@@ -7,6 +7,8 @@ import java.util.List;
 
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.TransactionDAO;
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.db.DbHelper;
+import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.exception.InvalidAccountException;
+import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.model.Account;
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.model.ExpenseType;
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.model.Transaction;
 
@@ -18,12 +20,18 @@ public class PersistentTransactionDAO implements TransactionDAO {
     }
 
     @Override
-    public void logTransaction(Date date, String accountNo, ExpenseType expenseType, double amount) {
-        if (accountNo != null) {
+    public void logTransaction(Date date, String accountNo, ExpenseType expenseType, double amount) throws InvalidAccountException {
+
+        Account account = dbHelper.getAccount(accountNo);
+        double balance = account.getBalance();
+        if (expenseType == ExpenseType.EXPENSE && (balance-amount) >=0){
             Transaction transaction = new Transaction(date,accountNo,expenseType,amount);
             dbHelper.logTransaction(transaction);
         }
-
+        else if(expenseType == ExpenseType.INCOME){
+            Transaction transaction = new Transaction(date,accountNo,expenseType,amount);
+            dbHelper.logTransaction(transaction);
+        }
     }
 
     @Override

@@ -47,7 +47,7 @@ public class DbHelper extends SQLiteOpenHelper {
         String TABLE_CREATE_QUERY_1 ="CREATE TABLE " + TABLE_1+
                 " ("
                 +ACCOUNT_NO+ " TEXT(50) PRIMARY KEY,"
-                +BANK_NAME+ " TEXT(50),"
+                +BANK_NAME+ " TEXT(50) ,"
                 +ACCOUNT_HOLDER_NAME+ " TEXT(50),"
                 +BALANCE+ " REAL"
                 +" )";
@@ -143,7 +143,6 @@ public class DbHelper extends SQLiteOpenHelper {
     public boolean deleteAccount(String accountNo){
         SQLiteDatabase db = this.getWritableDatabase();
         return db.delete(TABLE_1,"accountNo = "+accountNo,null) > 0;
-
     }
 
     public boolean logTransaction(Transaction transaction){
@@ -156,17 +155,12 @@ public class DbHelper extends SQLiteOpenHelper {
         contentValues.put(DATE,format.format(transaction.getDate()));
         contentValues.put(EXPENSE_TYPE,transaction.getExpenseType().toString());
         contentValues.put(AMOUNT,transaction.getAmount());
-
-
         long res = db.insert(TABLE_2,null,contentValues);
         if(res == -1){
             return false;
         }else{
             return true;
         }
-
-
-
     }
 
     public ArrayList<Transaction> getTransactions(){
@@ -182,8 +176,6 @@ public class DbHelper extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery(query,null);
         return extractCursor(cursor);
     }
-
-
 
     private ArrayList<Transaction> extractCursor(Cursor cursor){
         ArrayList<Transaction> transactionList = new ArrayList<>();

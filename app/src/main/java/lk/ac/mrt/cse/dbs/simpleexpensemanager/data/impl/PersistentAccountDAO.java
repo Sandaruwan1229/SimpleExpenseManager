@@ -41,21 +41,25 @@ public class PersistentAccountDAO implements AccountDAO {
     }
 
     @Override
-    public void addAccount(Account account) {
-        dbHelper.addAccount(account);
+    public void addAccount(Account account) throws InvalidAccountException {
+        Account account1 = dbHelper.getAccount(account.getAccountNo());
+        if(account1 == null){
+            dbHelper.addAccount(account);
+        }
+        else{
+            throw new InvalidAccountException("Account Number already exist");
+        }
     }
 
     @Override
     public void removeAccount(String accountNo) throws InvalidAccountException {
         dbHelper.deleteAccount(accountNo);
-
     }
 
     @Override
     public void updateBalance(String accountNo, ExpenseType expenseType, double amount) throws InvalidAccountException {
         if(accountNo ==null){
             throw new InvalidAccountException("Invalid Account Number");
-
         }
         Account account = dbHelper.getAccount(accountNo);
         double balance = account.getBalance();
@@ -64,7 +68,6 @@ public class PersistentAccountDAO implements AccountDAO {
         }else if (expenseType == ExpenseType.EXPENSE){
             account.setBalance(balance-amount);
         }
-
         if(account.getBalance()<0 ){
             throw new InvalidAccountException("Insufficient credit");
         }
